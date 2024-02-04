@@ -1,0 +1,25 @@
+{
+  "name": "projectparse",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/request": "^2.48.12",
+    "axios": "^1.6.7",
+    "cheerio": "^1.0.0-rc.12",
+    "crypto-js": "^4.2.0",
+    "fs": "^0.0.1-security",
+    "node-notifier": "^10.0.1",
+    "path": "^0.12.7",
+    "puppeteer": "^21.10.0",
+    "request": "^2.88.2"
+  },
+  "devDependencies": {
+    "@types/node-notifier": "^8.0.5"
+  }
+}
