@@ -1,16 +1,17 @@
 import ffmpeg from 'fluent-ffmpeg';
 
-class VideoConverter {
+class M3u8ToMp4Converter {
     private inputFile: string | undefined;
     private outputFile: string | undefined;
 
-    setInputFile(url: string): VideoConverter {
+
+    setInputFile(url: string): M3u8ToMp4Converter {
         if (!url) throw new Error("You must specify the M3U8 file address");
         this.inputFile = url;
         return this;
     }
 
-    setOutputFile(outputFile: string): VideoConverter {
+    setOutputFile(outputFile: string): M3u8ToMp4Converter {
         if (!outputFile) throw new Error("You must specify the file path and name");
         this.outputFile = outputFile;
         return this;
@@ -59,4 +60,4 @@ class VideoConverter {
 }
 
 
-export default VideoConverter;
+export default M3u8ToMp4Converter;

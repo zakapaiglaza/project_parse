@@ -42,23 +42,27 @@ class VideoConverter {
         return str + ']';
     }
 
-    private async convertAndNotify(i: number, index?: number): Promise<void> {
+    private async convertAndNotify(i: number, series?: number): Promise<void> {
         const s = i < 10 ? '0' + i : i;
-        const sezon = 4;
-        const name = `s0${sezon}e${s}`;
-        const dir = `s${sezon}`;
-        console.log('${index}', `${index}`, name);
-        const url = `https://blackpearl.tortuga.wtf/content/stream/serials/star.trek.discovery.${name}.rezka.mvo_${index}/hls/1080/index.m3u8`;
+        const season = 4;
+        const name = `s0${season}e${s}`;
+        const dir = `s${season}`;
+        console.log('${index}', `${series}`, name);
+        // const url = `https://blackpearl.tortuga.wtf/content/stream/serials/star.trek.discovery.${name}.rezka.mvo_${series}/hls/1080/index.m3u8`;
 
-        console.log('url', url);
+        // console.log('url', url);
 
         const converter = new M3u8ToMp4Converter();
 
         FileSett.createFile(dir);
 
+
+        const inputFile = `episode_${season}_${s}.m3u8`;
+        const outputFile = `s${season}/${name}.mp4`;
+
         await converter
-        .setInputFile(url)
-        .setOutputFile(`s${sezon}/${name}.mp4`)
+        .setInputFile(inputFile)
+        .setOutputFile(outputFile)
         .start({
             onProgress: (progress: { percent?: number }) => {
                 if (!progress.percent) {
