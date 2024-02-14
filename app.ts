@@ -31,7 +31,7 @@ class App {
             const selectedSeasonIndex = confirmSeasonIndex - 1;
             const selectedSeason = data.seasons[selectedSeasonIndex].title;
             console.log(`Выбран сезон: ${selectedSeason}`);
-            
+
 
             for (let i = 0; i < data.seasons[selectedSeasonIndex].episodes.length; i++) {
                 console.log(`${i + 1}. ${data.seasons[selectedSeasonIndex].episodes[i]}`);
@@ -57,6 +57,10 @@ class App {
         }
     }
 }
+
+
+
+
 
 const app = new App();
 app.run();
