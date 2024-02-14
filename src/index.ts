@@ -1,10 +1,7 @@
 import M3u8ToMp4Converter from "./modules/video/convert";
 import notifier from 'node-notifier';
-import WebPageScraper from "./modules/network/req_Service";
-import CryptoHelper from "./util_Sett/encrypted";
 import FileSett from "./modules/file/file";
-
-
+import MediaServerRequest from "./modules/network/mediaReqService";
 
 class VideoConverter {
     private progressData: Record<string, string> = {};
@@ -13,7 +10,7 @@ class VideoConverter {
         const keys = Object.keys(this.progressData).sort();
         let total = 0.0;
     
-        console.clear();
+        // console.clear();
         keys.forEach((key) => {
             const value = this.progressData[key];
             total += parseFloat(value);
@@ -42,37 +39,23 @@ class VideoConverter {
         return str + ']';
     }
 
-    private async convertAndNotify(i: number, series?: number): Promise<void> {
-        const s = i < 10 ? '0' + i : i;
-        const season = 4;
-        const name = `s0${season}e${s}`;
-        const dir = `s${season}`;
-        console.log('${index}', `${series}`, name);
-        // const url = `https://blackpearl.tortuga.wtf/content/stream/serials/star.trek.discovery.${name}.rezka.mvo_${series}/hls/1080/index.m3u8`;
-
-        // console.log('url', url);
-
+    private async convertAndNotify(url: string, outputFile: string): Promise<void> {
         const converter = new M3u8ToMp4Converter();
-
-        FileSett.createFile(dir);
-
-
-        const inputFile = `episode_${season}_${s}.m3u8`;
-        const outputFile = `s${season}/${name}.mp4`;
+        
 
         await converter
-        .setInputFile(inputFile)
+        .setInputFile(url)
         .setOutputFile(outputFile)
         .start({
             onProgress: (progress: { percent?: number }) => {
                 if (!progress.percent) {
                     return false;
                 }
-                this.progressData[name] = progress.percent.toFixed(2);
+                this.progressData[outputFile] = progress.percent.toFixed(2);
                 this.updateProgress();
             },
             onError: (error: Error) => {
-                console.log(`Error processing ${name}: ${error}`);
+                console.log(`Error processing ${outputFile}: ${error}`);
             }
         })
         .then(() => {
@@ -81,14 +64,35 @@ class VideoConverter {
         }).catch((e : Error) => {
             console.log(e);
         });
-        
     }
 
-    public async processVideos(index: number, series: number): Promise<void> {
-        await this.convertAndNotify(index, series);
+    public async processVideos(mediaData: Array<{ url?: string, RESOLUTION?: string, BANDWIDTH?: string }>, season: number, episode: number): Promise<void> {
+        if (episode < 1 || episode > mediaData.length) {
+            console.log(`нет такого эпизода: ${episode}`);
+            return;
+        }
+    
+        const episodeData = mediaData[episode - 1];
+        console.log('Данные об эпизоде:', episodeData);
+    
+        if (!episodeData.url || !episodeData.RESOLUTION || !episodeData.BANDWIDTH) {
+            console.log(`Отсутствуют данные об эпизоде ${episode}`);
+            return;
+        }
+    
+        const seasonP = season < 10 ? '0' + season : season.toString();
+        const episodeP = episode < 10 ? '0' + episode : episode.toString();
+        const outputFile = `s${seasonP}/s${seasonP}e${episodeP}.mp4`;
+    
+        FileSett.createDirectoryAndEmptyFile(outputFile);
+    
+        await this.convertAndNotify(episodeData.url, outputFile);
+    
+        console.log(`Конвертация успешна для эпизода ${episode}`);
     }
+    
+    
+    
 }
-
-
 
 export default VideoConverter;

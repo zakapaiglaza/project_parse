@@ -1,11 +1,12 @@
 import fs from 'fs';
 
-
 class FileSett {
-    static createFile(dir:string) {
-        if (!fs.existsSync(dir)) {
-            fs.mkdirSync(dir, { recursive: true });
+    static createDirectoryAndEmptyFile(filePath: string) {
+        const directory = filePath.substring(0, filePath.lastIndexOf('/'));
+        if (!fs.existsSync(directory)) {
+            fs.mkdirSync(directory, { recursive: true });
         }
+        fs.writeFileSync(filePath, ''); 
     }
 
     static writeToFile(filePath: string, data: Buffer) {
@@ -19,7 +20,6 @@ class FileSett {
     static readText(filePath: string): string {
         return fs.readFileSync(filePath, 'utf8');
     }
-
 }
 
 export default FileSett;

@@ -1,19 +1,15 @@
-import M3u8ToMp4Converter from "./src/modules/video/convert";
+
 import readlineSync from "readline-sync";
 import WebPageScraper from "./src/modules/network/req_Service";
-import { resolve } from "path";
-import request from "request";
-// import DownloadFile from "./src/modules/file/download";
+import M3u8ToMp4Converter from "./src/modules/video/convert";
+import MediaServerRequest from "./src/modules/network/mediaReqService";
+import VideoConverter from "./src/index";
 
 class App {
     private scraper: WebPageScraper;
-    private converter: M3u8ToMp4Converter;
-    // private downloader: DownloadFile;
 
     constructor() {
         this.scraper = new WebPageScraper('');
-        this.converter = new M3u8ToMp4Converter();
-        // this.downloader = new DownloadFile();
     }
 
     async run(): Promise<void> {
@@ -21,39 +17,48 @@ class App {
             const url = readlineSync.question('Введите URL: ', { encoding: 'utf-8' });
             this.scraper.writeUrl(url);
             const data = await this.scraper.scrapeData();
-            console.log('Данные о сериале', data);
+            // console.log('Данные о сериале', data);
 
-            for(let i = 0; i < data.episodes.length; i++) {
-                console.log(`${i + 1}. ${data.episodes[i]}`);
+            for (let i = 0; i < data.seasons.length; i++) {
+                console.log(`${i + 1}. ${data.seasons[i].title}`);
             }
-
-            const confirmEpisodeIndex = readlineSync.questionInt('Выберите эпизод: ');
-            if(confirmEpisodeIndex < 1 ) {
-                console.log('Такой серии нет!');
+            const confirmSeasonIndex = readlineSync.questionInt('Выберите сезон: ');
+            if (confirmSeasonIndex < 1 || confirmSeasonIndex > data.seasons.length) {
+                console.log('Некорректный выбор сезона!');
                 return;
             }
 
-            const selectedEpisode = data.episodes[confirmEpisodeIndex - 1];
+            const selectedSeasonIndex = confirmSeasonIndex - 1;
+            const selectedSeason = data.seasons[selectedSeasonIndex].title;
+            console.log(`Выбран сезон: ${selectedSeason}`);
+            
+
+            for (let i = 0; i < data.seasons[selectedSeasonIndex].episodes.length; i++) {
+                console.log(`${i + 1}. ${data.seasons[selectedSeasonIndex].episodes[i]}`);
+            }
+            const confirmEpisodeIndex = readlineSync.questionInt('Выберите эпизод: ');
+            if (confirmEpisodeIndex < 1 || confirmEpisodeIndex > data.seasons[confirmSeasonIndex - 1].episodes.length) {
+                console.log('Некорректный выбор эпизода!');
+                return;
+            }
+
+            const selectedEpisode = data.seasons[selectedSeasonIndex].episodes[confirmEpisodeIndex - 1];
             console.log(`Выбран эпизод: ${selectedEpisode}`);
 
-            const season = 1; 
-            const episodeNumber = Number(selectedEpisode.split(' ')[0]);
+            const mediaServerRequest = new MediaServerRequest();
+            const mediaData = await mediaServerRequest.processMediaServerRequest();
 
-          
-            // const outputFile = `episode_${season}_${episodeNumber}.m3u8`;
-            // await this.downloader.downloader(url, outputFile);
+            const videoConverter = new VideoConverter();
+            await videoConverter.processVideos(mediaData, selectedSeasonIndex + 1, confirmEpisodeIndex);
 
-        
-            await this.converter.setInputFile(`episode_${season}_${episodeNumber}.m3u8`)
-                .setOutputFile(`episode_${season}_${episodeNumber}.mp4`)
-                .start();
-
-            console.log(`Конвертация успешна для сезона ${season}, серии ${selectedEpisode}`);
+            console.log(`Конвертация успешна для эпизода ${selectedEpisode}`);
         } catch (e) {
-            console.error('Ошибка:', e);
+            console.error('Произошла ошибка:', e);
         }
     }
 }
 
 const app = new App();
 app.run();
+
+

@@ -1,3 +1,4 @@
+
 import ffmpeg from 'fluent-ffmpeg';
 
 class M3u8ToMp4Converter {
@@ -30,32 +31,37 @@ class M3u8ToMp4Converter {
             onCodecData: () => {},
         }, options);
 
-        return new Promise<void>((resolve, reject) => {
+        return new Promise <void>(async(resolve, reject) => {
+            console.log('outputFile :>> ', this.outputFile);
             if (!this.inputFile || !this.outputFile) {
                 reject(new Error("You must specify the input and the output files"));
                 return;
             }
 
-            ffmpeg(this.inputFile)
-            .on('start', options.onStart)
-            .on('codecData', options.onCodecData)
-            .on('progress', (progress) => {
-                options.onProgress(progress); 
-            })
-            .on("error", (error) => {
-                options.onError(error); 
-                reject(new Error(error)); 
-            })
-            .on('stderr', options.onStderr)
-            .on("end", (...args) => {
-                resolve(); 
-                options.onEnd(...args);
-            })
-            .outputOptions("-c copy")
-            .outputOptions("-bsf:a aac_adtstoasc")
-            .output(this.outputFile)
-            .run();
-        });
+            // await new Promise((resolve, reject) => {
+                ffmpeg(this.inputFile)
+                    .outputOptions("-c copy")
+                    .outputOptions("-bsf:a aac_adtstoasc")
+                    .output(this.outputFile)
+                    .on('start', options.onStart)
+                    .on('codecData', options.onCodecData)
+                    .on('progress', (progress) => {
+                        options.onProgress(progress); 
+                    })
+                    .on("end", (...args) => {
+                        console.log('aaaaaaaaaaaaaaa')
+                            resolve(); 
+                            options.onEnd(...args);
+                        })
+                    .on("error", (error) => {
+                            console.log('error :>> ', error);
+                            options.onError(error); 
+                            reject(new Error(error)); 
+                        })
+                    .on('stderr', options.onStderr)
+                    .run();        
+            });
+        // });
     }
 }
 
