@@ -26,8 +26,4 @@ export default class Seasons {
             return null;
         }
     }
-
-    // getQualityEpisodes(quality: string): Episodes[] {
-    //     return this.episode.filter(episode => episode.videoQuality === quality);
-    // }
 }

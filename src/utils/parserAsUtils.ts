@@ -36,39 +36,6 @@ class Parser {
             callback(error, []);
         });
     }
-    // async checkQuality(url: string): Promise<any[]> {
-    //     try {
-    //         const res = await AxiosUtils.get(url);
-    //         const playData = res.data.split(`new Playerjs(`)[1].split(`});`)[0].split(`file:"`)[1].split('"')[0];
-    //         const qualRes = await AxiosUtils.get(playData);
-    //         const qualData = qualRes.data.split(/\r?\n/);
-
-    //         let oData: any = {};
-    //         let arrayData: any[] = [];
-
-    //         for (let i = 0; i < qualData.length; i++) {
-    //             if (qualData[i].search('tps://') == 2) {
-    //                 oData.url = qualData[i];
-    //             } else if (qualData[i]) {
-    //                 let splitData = qualData[i].split(':')[1].split(',');
-    //                 oData.resolution = splitData[0].split('RESOLUTION=')[1];
-    //                 oData.bandwidth = splitData[1].split('BANDWIDTH=')[1];
-
-    //             }
-
-    //             if (Object.keys(oData).length == 3) {
-    //                 arrayData.push(oData);
-    //                 oData = {};
-    //             }
-    //         }
-
-    //         return arrayData;
-
-    //     } catch (e) {
-    //         console.error('ошибка проверки качества', e);
-    //         return [];
-    //     }
-    // }
 
     getPlayerData(url: string, callBack: (error: any, data: any) => void): void {
         AxiosUtils.get(url).then(response => {

@@ -85,7 +85,8 @@ async function start() {
                     console.log('Выбрано качество:', indexQuality.resolution);
 
                     const converter = new M3u8ToMp4Converter();
-                    const filePath = userManager.FilePathUser();
+
+                    const filePath = userManager.FilePathUser('download_Serials');
 
                     await converter.setInputFile(indexQuality.url)
                         .setOutputFile(filePath)

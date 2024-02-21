@@ -37,9 +37,9 @@ export default class UserDataManager {
         return this.userData;
     }
 
-    public FilePathUser(): any {
+    public FilePathUser(customPath: string): string {
         const { episode, season } = this.userData;
-        return `D:/IT/zakapaiglaza/projectParse/download_Serials/season${season}_episode${episode}.mp4`;
+        return `${customPath}/season${season}_episode${episode}.mp4`;
     }
 
     public getUserUrlSerials(seasons: any[]): string | null {
