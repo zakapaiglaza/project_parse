@@ -1,10 +1,7 @@
 import CryptoJS from "crypto-js";
 
-export default class CryptoHelper {
-    static decrypt(passphrase: string, encryptedJsonString: string | undefined): string | undefined {
-        if (!encryptedJsonString) {
-            return undefined;
-        }
+class CryptoUtils {
+    static aesDecrypt(passphrase: string, encryptedJsonString: string): string {
         let objJson = JSON.parse(encryptedJsonString);
 
         let encrypted = objJson.ciphertext;
@@ -18,3 +15,5 @@ export default class CryptoHelper {
         return decrypted.toString(CryptoJS.enc.Utf8);
     }
 }
+
+export default CryptoUtils;

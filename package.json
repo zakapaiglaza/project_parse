@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/cheerio": "^0.22.35",
     "@types/readline-sync": "^1.4.8",
     "@types/request": "^2.48.12",
     "axios": "^1.6.7",
