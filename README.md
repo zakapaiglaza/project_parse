@@ -8,7 +8,8 @@
 1. Установите Node.js,
 2. Клонируйте этот репозиторий: git clone https://github.com/zakapaiglaza/project_parse.git
 3. Установите зависимости: npm install
-4. Запуск : npm start
+4. Создайте папку и по пути  projectParse/src/app.ts (на 89 строке укажите название папки)
+5. Запуск : npm start
 
 
 
